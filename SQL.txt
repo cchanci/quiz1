@@ -1,0 +1,37 @@
+--PART 1
+
+--1.Create a tablespace with name 'quiz3' and two datafiles. Each datafile of 50Mb.
+
+CREATE TABLESPACE quiz3
+DATAFILE '/u01/app/oracle/oradata/XE/Quiz31.dbf' SIZE 50M,
+         '/u01/app/oracle/oradata/XE/Quiz32.dbf' SIZE 50M;
+
+--2.Create a profile with 5 attempts to lock the password, the name of the profile should be 'estudiante_quiz'
+CREATE PROFILE estudiante_quiz LIMIT
+FAILED_LOGIN_ATTEMPTS	5;
+
+--3.Create an user named "carlos_1" with password "carlos_1". 
+CREATE USER carlos_1 IDENTIFIED BY carlos_1
+DEFAULT TABLESPACE quiz3;
+ALTER USER carlos_1 PROFILE estudiante_quiz;
+GRANT CONNECT TO carlos_1;
+GRANT CREATE TABLE TO carlos_1;
+
+ALTER USER carlos_1 QUOTA UNLIMITED on quiz3;
+--4. Create an user named "user2" with password "user2"
+CREATE USER user2 IDENTIFIED BY user2
+DEFAULT TABLESPACE quiz3;
+GRANT CONNECT TO user2;
+ALTER USER user2 PROFILE estudiante_quiz;
+
+ALTER USER user2 QUOTA UNLIMITED on quiz3;
+
+--- parte 2
+-- 3. Give permission to view table "icfes" of the user2 (Do selects)
+
+GRANT SELECT ON carlos1.ICFES TO user2;  
+
+--parte 3
+
+select carlos_1.GENERO, carlos_1.fecha_nacimiento, carlos_1.unicipio_residencia, carlos_1.puntaje_global FROM ICFES
+ORDER BY(puntaje_global);
